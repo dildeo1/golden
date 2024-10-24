@@ -1,0 +1,222 @@
+<nz-layout class="layout" style="    height: 140vh;">
+  <nz-header>
+    <div class="logo"></div>
+    <span style="font-size: 18px;
+        color: white;">Golden Diary</span>
+    <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+      <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+    </span>
+    <span style="font-size: 18px;
+        color: white;">
+      <a nz-dropdown [nzDropdownMenu]="menu" class="usericon">
+        <span>
+          <nz-avatar [nzText]="adminName " nzSize="large" style="vertical-align: middle;"></nz-avatar>
+        </span>
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item>
+            <a (click)="onUpdateInfo()">Update Profile</a>
+          </li>
+          <li nz-menu-item>
+            <a (click)="updatePassword()">Change Password</a>
+          </li>
+          <li nz-menu-item>
+            <a (click)="logout()">Logout</a>
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+      <!-- <nz-dropdown-menu #menu="nzDropdownMenu">
+          <a nz-dropdown>
+            <span>
+              <nz-avatar [nzText]="'adminName' | slice:0:1" nzSize="large" style="vertical-align: middle;"></nz-avatar>
+            </span>
+          </a>
+          <ul nz-menu>
+            <li nz-menu-item>
+              <a (click)="updatePassword()">Change Password</a>
+            </li>
+            <li nz-menu-item>
+              <a (click)="logout()">Logout</a>
+            </li>
+          </ul>
+        </nz-dropdown-menu> -->
+    </span>
+
+  </nz-header>
+  <nz-layout>
+    <nz-sider [nzWidth]="230" style="background:#fff" [(nzCollapsed)]="isCollapsed" [nzCollapsedWidth]="0">
+
+      <ul nz-menu [nzMode]="'inline'" style="height:100%" [nzInlineCollapsed]="isCollapsed">
+
+        <li nz-menu-item
+          [routerLink]="['my-profile']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">My Profile</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['admin-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()" *ngIf="AdminInfo.Roles?.Whether_Admin_Section">
+          <span class="nav-text">Admin Section</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['Language-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Language</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['State-module']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">State</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['District-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">District</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['City-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">City</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['Area-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Area</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['Pincode-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Pincode</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['Business-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Business</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['Commodities-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Commodities</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['Script-section']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Script</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['ratings']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Ratings</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['users']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Users</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['user-posts']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">User Posts</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['subscription']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Subscriptions</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['banners']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Banners</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['terms-conditions']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Terms & Conditions</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['Referrals']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Referrals</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['bulk-notifications']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Bulk Notifications</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['reported-posts']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Reported Posts</span>
+        </li>
+        <li nz-menu-item
+          [routerLink]="['reported-users']" routerLinkActive="ant-menu-item-selected" (click)="onClick()">
+          <span class="nav-text">Reported Users</span>
+        </li>
+
+
+      </ul>
+    </nz-sider>
+    <nz-layout>
+      <nz-content style="  background: rgb(244, 245, 247);; padding: 24px;">
+
+        <router-outlet></router-outlet>
+      </nz-content>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isAdminChangeModal" nzTitle="Update Password"
+  nzOkText='Update Password' (nzOnCancel)="onCancelAdminPasModal()" (nzOnOk)="onUpdateAdminPasDetails()">
+  <ng-container *nzModalContent>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <form nz-form [formGroup]="changePasswordForm">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="labelWidth">Old Password</nz-form-label>
+          <nz-form-control [nzSpan]="controlWidth" nzErrorTip="please input Old Password">
+            <input type="password" nz-input formControlName="Old_Password" placeholder="Old Password">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSpan]="labelWidth">New Password</nz-form-label>
+          <nz-form-control [nzSpan]="controlWidth" [nzValidateStatus]="passwordValidation" nzHasFeedback
+            [nzErrorTip]="errorTip">
+            <input type="password" nz-input formControlName="New_Password" (input)="checkPassword()"
+              placeholder="New Password">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSpan]="labelWidth">Confirm Password</nz-form-label>
+          <nz-form-control [nzSpan]="controlWidth" [nzValidateStatus]="validateStatusConfirmPass" nzHasFeedback
+            [nzErrorTip]="errortipValidate">
+            <input type="password" nz-input formControlName="Confirm_Password" placeholder="Confirm Password">
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+</ng-container>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isAdminVisible" nzTitle="Update Profile Info" nzOkText='Update'
+  (nzOnCancel)="onCancelAdminInfo()" (nzOnOk)="onUpdateAdminInfo()">
+  <ng-container *nzModalContent>
+  <form nz-form [formGroup]="updateAdminForm">
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label nzSpan="8" nzRequired>Name</nz-form-label>
+          <nz-form-control nzSpan="10" nzErrorTip="Please enter Name">
+            <input type="text" nz-input formControlName="Name">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label nzSpan="8" nzRequired>Phone Number</nz-form-label>
+          <nz-form-control nzSpan="10">
+            <input type="text" nz-input formControlName="PhoneNumber">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label nzSpan="8" nzRequired>EmailID</nz-form-label>
+          <nz-form-control nzSpan="10">
+            <input type="text" nz-input formControlName="EmailID">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label nzSpan="8" nzRequired>Designation</nz-form-label>
+          <nz-form-control nzSpan="10">
+            <input type="text" nz-input formControlName="Designation">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+</ng-container>
+</nz-modal>

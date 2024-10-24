@@ -1,0 +1,125 @@
+<div nz-row *ngIf="!isAdding">
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" nzTitle="T&C LIST">
+      <div nz-row style="margin-bottom:20px;">
+        <div nz-col nzSpan="6" [nzOffset]="18">
+          <button nz-button class="add-button" style="float: right;" (click)="onAdd()">
+            {{isEditing?'EDIT T&C':'ADD T&C'}}</button>
+        </div>
+        <nz-tabset>
+          <nz-tab (nzClick)="onTabClick(true)" nzTitle="Active T&C">
+          </nz-tab>
+          <nz-tab (nzClick)="onTabClick(false)" nzTitle="Inactive T&C">
+          </nz-tab>
+        </nz-tabset>
+      </div>
+      <div nz-row>
+        <div nz-col nzSpan="6">
+          <nz-form-item>
+            <nz-form-label nzSpan="24">Search</nz-form-label>
+            <nz-form-control nzSpan="24">
+              <input type="text" nz-input [formControl]="Search" placeholder="Search.....">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-table #basicTable [nzData]="tableList" [nzLoading]="isTableloading" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Link</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+            <!-- <th></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of tableList;let i=index">
+
+            <td>{{skip+i+1}}</td>
+            <td>{{data.Link}}</td>
+            <td>
+              <p [innerHTML]="data.Description"></p>
+            </td>
+            <td>
+              <span *ngIf="data.Status == true" style="color: green;">Active</span>
+              <span *ngIf="data.Status == false" style="color: red;">Inactive</span>
+            </td>
+            <td>
+              <i nz-icon nzType="more" nzTheme="outline" nz-dropdown [nzDropdownMenu]="menu"></i>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item>
+                    <span (click)="onEdit(data)">Edit</span>
+                  </li>
+                  <li nz-menu-item>
+                    <span [ngSwitch]="data.Status">
+                      <span *ngSwitchCase=true>
+
+                        <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: red;cursor: pointer;"
+                          nzPopconfirmTitle="Are you sure you want to Inactive this?">Make Inactive</span>
+                      </span>
+                      <span *ngSwitchCase=false>
+                        <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: blue;cursor: pointer;"
+                          nzPopconfirmTitle="Are you sure you want to Active this?">Make Active</span>
+                      </span>
+                      <span *ngSwitchDefault>
+                        NA
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </td>
+
+          </tr>
+        </tbody>
+      </nz-table>
+      <nz-pagination (nzPageIndexChange)="onNextPage($event)" [nzPageSize]="limit" [nzPageIndex]="currentPage"
+        [nzTotal]="TotalItems" [nzShowTotal]="totalTemplate"></nz-pagination>
+      <ng-template #totalTemplate let-total><span class="ng-template" style="color: #ff0018;
+      font-weight: 600;">Total : {{ total }}</span></ng-template>
+    </nz-card>
+  </div>
+</div>
+<div nz-row *ngIf="isAdding">
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" [nzTitle]="title">
+      <ng-template #title>
+        {{isEditing?'Update T&C':'Add T&C'}}
+      </ng-template>
+      <div nz-row>
+        <div nz-col nzSpan="12">
+          <nz-form-item>
+            <nz-form-label nzSpan="6">Link</nz-form-label>
+            <nz-form-control nzSpan="12">
+              <input type="text" nz-input [(ngModel)]="Link" [ngModelOptions]="{standalone: true}" placeholder=" Enter Link">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label nzSpan="3">Description</nz-form-label>
+            <nz-form-control nzSpan="18" nzErrorTip="Please enter Description">
+              <!-- <input type="text" nz-input formControlName="Description" placeholder="Description"> -->
+              <ck-editor name="editor1"  [config]="ckeConfig"  #myckeditor="ngModel" debounce="500"  #ckEditor  [(ngModel)]="Description" [ngModelOptions]="{standalone: true}" skin="moono-lisa" language="en" [fullPage]="true"></ck-editor>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-control [nzSpan]="24" style="text-align: center;">
+              <button (click)="onClose()" nzType="default" style="margin-right: 10px;" nz-button>
+                <span>Cancel</span></button>
+              <button (click)="onsubmit()" [nzLoading]="isAddBtnLoading" nz-button nzType="primary">
+                <span>{{isEditing?'Update T&C':'Add T&C'}}</span></button>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+
+.Update-Button{
+    cursor: pointer;
+    width: 80%;
+    border-radius: 20px;
+    border: 1px solid #6487e9;
+    background: #6487e9;
+    color: #fff;
+    height: 35px;
+}

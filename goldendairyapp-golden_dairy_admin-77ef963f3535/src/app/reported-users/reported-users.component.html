@@ -1,0 +1,68 @@
+<div nz-row>
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" nzTitle="REPORTED USERS LIST">
+      <div nz-row>
+        <div nz-col nzSpan="6">
+          <nz-form-item>
+            <nz-form-label  [nzSpan]="24">Status</nz-form-label>
+            <nz-form-control [nzSpan]="24">
+              <nz-select style="width: 100%;" [formControl]="Report_Status" nzShowSearch  nzAllowClear
+              nzPlaceHolder="Select Status">
+              <nz-option [nzValue]="1" [nzLabel]="'Pending'"></nz-option>
+              <nz-option [nzValue]="2" [nzLabel]="'Approved'"></nz-option>
+              <nz-option [nzValue]="3" [nzLabel]="'Rejected'"></nz-option>
+            </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-table #basicTable [nzData]="tableList" [nzLoading]="isTableloading" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Report Description</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>EmailID</th>
+            <th>Shop Name</th>
+            <th>Shop Number</th>
+            <th>Reported Date</th>
+            <th></th>
+            <!-- <th></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of tableList;let i=index">
+
+            <td>{{skip+i+1}}</td>
+            <td>{{data.Report_Description}}</td>
+            <td>{{data.User_Data?.OwnerName}}</td>
+            <td>{{data.User_Data?.PhoneNumber}}</td>
+            <td>{{data.User_Data?.EmailID}}</td>
+            <td>{{data.User_Data?.ShopName}}</td>
+            <td>{{data.User_Data?.ShopNumber}}</td>
+            <td>{{data.created_at|date:'medium'}}</td>
+            <td>
+              <span *ngIf="data.Report_Status==1">
+                <a (click)="onChangeStatus(data,1)" style="margin-right: 20px;color: green;">
+                  Approve
+                </a>
+                <a style="color: red;" (click)="onChangeStatus(data,2)">
+                  Reject
+                </a>
+              </span>
+              <span *ngIf="data.Report_Status==2" style="color: green;">Approved</span>
+              <span *ngIf="data.Report_Status==3" style="color: red;">Rejected</span>
+             
+            </td>
+
+          </tr>
+        </tbody>
+      </nz-table>
+      <nz-pagination (nzPageIndexChange)="onNextPage($event)" [nzPageSize]="limit" [nzPageIndex]="currentPage"
+        [nzTotal]="TotalItems" [nzShowTotal]="totalTemplate"></nz-pagination>
+      <ng-template #totalTemplate let-total><span class="ng-template" style="color: #ff0018;
+      font-weight: 600;">Total : {{ total }}</span></ng-template>
+    </nz-card>
+  </div>
+</div>

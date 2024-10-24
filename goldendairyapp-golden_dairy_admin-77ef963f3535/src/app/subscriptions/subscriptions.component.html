@@ -1,0 +1,223 @@
+<div nz-row *ngIf="!isAdding">
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" nzTitle="SUBSCRIPTIONS LIST">
+      <div nz-row style="margin-bottom:20px;">
+        <div nz-col nzSpan="6" [nzOffset]="18">
+          <button nz-button class="add-button" style="float: right;" (click)="onAdd()">
+            {{isEditing?'EDIT SUBSCRIPTION':'ADD SUBSCRIPTION'}}</button>
+        </div>
+
+        <nz-tabset>
+          <nz-tab (nzClick)="onTabClick(true)" nzTitle="Active Subscriptions">
+          </nz-tab>
+          <nz-tab (nzClick)="onTabClick(false)" nzTitle="Inactive Subscriptions">
+          </nz-tab>
+        </nz-tabset>
+
+      </div>
+      <div nz-row>
+        <div nz-col nzSpan="6">
+          <nz-form-item>
+            <nz-form-label nzSpan="24">Search</nz-form-label>
+            <nz-form-control nzSpan="24">
+              <input type="text" nz-input [formControl]="Search" placeholder="Search.....">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-table #basicTable [nzData]="tableList" [nzLoading]="isTableloading" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Subscription Name</th>
+            <!-- <th>Subscription Type</th> -->
+            <th>Duration(In Months)</th>
+            <th>No of Photos</th>
+            <th>Amount</th>
+            <th>Is Recommended</th>
+            <th>Is Free Plan</th>
+            <th>Status</th>
+            <th>Actions</th>
+            <!-- <th></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of tableList;let i=index">
+
+            <td>{{data.SNo}}</td>
+            <td>{{data.Subscription_Name}}</td>
+            <!-- <td>{{data.Subscription_Type==1?'Photos':''}}</td> -->
+            <td>{{data.Duration}}</td>
+            <td>{{data.Max_Photos}}</td>
+            <td>{{data.Amount}}</td>
+            <td>{{data.IsRecommended?'Yes':'No'}}</td>
+            <td>{{data.IsFreePlan?'Yes':'No'}}</td>
+            <td>
+              <span *ngIf="data.Status == true" style="color: green;">Active</span>
+              <span *ngIf="data.Status == false" style="color:red">Inactive</span>
+            </td>
+            <td>
+              <i nz-icon nzType="more" nzTheme="outline" nz-dropdown [nzDropdownMenu]="menu"></i>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item>
+                    <span (click)="onEdit(data)">Edit</span>
+                  </li>
+                  <li nz-menu-item>
+                    <span [ngSwitch]="data.Status">
+                      <span *ngSwitchCase=true>
+
+                        <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: red;cursor: pointer;"
+                          nzPopconfirmTitle="Are you sure you want to Inactive this?">Make Inactive</span>
+                      </span>
+                      <span *ngSwitchCase=false>
+                        <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: blue;cursor: pointer;"
+                          nzPopconfirmTitle="Are you sure you want to Active this?">Make Active</span>
+                      </span>
+                      <span *ngSwitchDefault>
+                        NA
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </td>
+
+          </tr>
+        </tbody>
+      </nz-table>
+      <nz-pagination (nzPageIndexChange)="onNextPage($event)" [nzPageSize]="limit" [nzPageIndex]="currentPage"
+        [nzTotal]="TotalItems" [nzShowTotal]="totalTemplate"></nz-pagination>
+      <ng-template #totalTemplate let-total><span class="ng-template" style="color: #ff0018;
+      font-weight: 600;">Total : {{ total }}</span></ng-template>
+    </nz-card>
+  </div>
+</div>
+<div nz-row *ngIf="isAdding">
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" [nzTitle]="title">
+      <ng-template #title>
+        {{isEditing?'Update Subscription':'Add Subscription'}}
+      </ng-template>
+      <form nz-form [formGroup]="addForm">
+        <div nz-row>
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">SNo</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="SNo" placeholder="Enter SNo">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">Subscription Name</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="Subscription_Name" placeholder="Enter Subscription Name">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">Duration(In Months)</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="Duration" placeholder="Enter Duration">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <!-- <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label nzSpan="6">Description</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <textarea type="text" nz-input formControlName="Description" placeholder="Enter Description"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div> -->
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">Amount</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="Amount" placeholder="Enter Amount">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">Plan Details</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <textarea type="text" nz-input formControlName="Plan_Details" placeholder="Enter Plan Details"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">No of Photos</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="No_of_Photos" placeholder="Enter No of Photos">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">Is Recommended</nz-form-label>
+              <nz-form-control nzSpan="12">
+               <nz-switch formControlName="IsRecommended"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="12">
+            <nz-form-item>
+              <nz-form-label nzSpan="8">Is Free Plan</nz-form-label>
+              <nz-form-control nzSpan="12">
+               <nz-switch formControlName="IsFreePlan"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <!-- <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label nzSpan="6">Add Benefits</nz-form-label>
+              <nz-form-control nzSpan="12" formArrayName="Benefits">
+                <ng-container *ngFor="let authCotrols of arrayControls.controls; let j=index">
+                  <div [formGroupName]="j">
+                    <div nz-row nzGutter="8">
+                      <div nz-col nzSpan="21">
+                        <nz-form-item>
+                          <nz-form-control nzSpan="24" [nzErrorTip]="'please enter Benefits'">
+                            <input formControlName="Benefit" nz-input placeholder="Benefits" />
+                          </nz-form-control>
+                        </nz-form-item>
+                      </div>
+                      <div nz-col nzSpan="1" *ngIf="arrayControls.controls.length>1">
+                        <nz-form-item>
+                          <nz-form-control>
+                            <button nz-button nzType="link" nz-tooltip nzTitle="Remove" (click)="onRemoveControls(j)"><i
+                                nz-icon nzType="minus-circle" nzTheme="outline"></i></button>
+                          </nz-form-control>
+                        </nz-form-item>
+
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </nz-form-control>
+              <nz-form-control nzSpan="2">
+                <i nz-icon nzType="plus-circle" style="font-size: 20px;float: right;cursor: pointer;" nzTheme="outline" (click)="addControls()"></i>
+              </nz-form-control>
+            </nz-form-item>
+          </div> -->
+
+          <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-control [nzSpan]="24" style="text-align: center;">
+                <button (click)="onClose()" nzType="default" style="margin-right: 10px;" nz-button>
+                  <span>Cancel</span></button>
+                <button (click)="onsubmit()" [nzLoading]="isAddBtnLoading" nz-button nzType="primary">
+                  <span>{{isEditing?'Update Subscription':'Add Subscription'}}</span></button>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </form>
+    </nz-card>
+  </div>
+</div>

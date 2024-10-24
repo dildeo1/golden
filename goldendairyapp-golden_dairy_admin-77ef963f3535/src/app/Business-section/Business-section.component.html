@@ -1,0 +1,129 @@
+<div nz-row *ngIf="!isAdding">
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" nzTitle="BUSINESS LIST">
+      <div nz-row style="margin-bottom:20px;">
+        <div nz-col nzSpan="6" [nzOffset]="18">
+          <button nz-button 
+          class="add-button" style="float: right;" (click)="onAdd()">{{isEditing?'EDIT BUSINESS ':'ADD BUSINESS '}}</button>
+        </div>
+        <nz-tabset>
+          <nz-tab (nzClick)="onTabClick(true)" nzTitle="Active Business">
+          </nz-tab>
+          <nz-tab (nzClick)="onTabClick(false)" nzTitle="Inactive Business">
+          </nz-tab>
+        </nz-tabset>
+      </div>
+      <div nz-row>
+        <div nz-col nzSpan="6">
+          <nz-form-item>
+            <nz-form-label nzSpan="24">Search</nz-form-label>
+            <nz-form-control nzSpan="24">
+              <input type="text" nz-input [formControl]="Search" placeholder="Search.....">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <nz-table #basicTable [nzData]="BusinessList" [nzLoading]="isTableloading" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Business</th>
+            <th>Subscription</th>
+            <th>Status</th>
+            <th >Actions</th>
+            <!-- <th></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of BusinessList;let i=index">
+             
+            <td>{{skip+i+1}}</td>
+            <td>{{data.BusinessName}}</td>
+            <td>{{data.isSubscriptionAllowed?'Yes':'No'}}</td>
+             <td>
+                <span *ngIf="data.status == true" style="color: green;">Active</span>
+                <span *ngIf="data.status == false" style="color: red;">Inactive</span>
+              </td>
+              <td >
+                <i nz-icon nzType="more" nzTheme="outline" nz-dropdown [nzDropdownMenu]="menu"></i>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item>
+                      <span (click)="onEdit(data)">Edit</span>
+                    </li>
+                      <li nz-menu-item> 
+                        <span [ngSwitch]="data.status">
+                          <span *ngSwitchCase=true>
+                         
+                            <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: red;cursor: pointer;"
+                            nzPopconfirmTitle="Are you sure you want to Inactive this?">Make Inactive</span>
+                          </span>
+                          <span *ngSwitchCase=false>
+                            <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: blue;cursor: pointer;"
+                            nzPopconfirmTitle="Are you sure you want to Active this?">Make Active</span>
+                          </span>
+                          <span *ngSwitchDefault>
+                            NA
+                          </span>
+                        </span>
+                      </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </td>
+            
+          </tr>
+        </tbody>
+      </nz-table>
+      <nz-pagination (nzPageIndexChange)="onNextPage($event)" [nzPageSize]="limit" [nzPageIndex]="currentPage"
+      [nzTotal]="Count" [nzShowTotal]="totalTemplate"></nz-pagination>
+    <ng-template #totalTemplate let-total><span class="ng-template" style="color: #ff0018;
+      font-weight: 600;">Total : {{ total }}</span></ng-template>
+    </nz-card>
+  </div>
+</div>
+
+
+
+ <div nz-row *ngIf="isAdding">
+  <div nz-col nzSpan="12">
+    <nz-card style="width:100%;" [nzTitle]="title">
+      <ng-template #title>
+        {{isEditing?'Update Business ':'Add Business'}}
+      </ng-template>
+    <form nz-form [formGroup]="addForm">
+      <div nz-row>
+         <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label nzSpan="6">Business</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="Business_Name" placeholder=" Enter Business">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+         <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label nzSpan="6">Subscription?</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-switch formControlName="isSubscriptionAllowed"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+      
+   
+         <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-control [nzSpan]="24" style="text-align: center;">
+              <button (click)="onClose()" nzType="default" style="margin-right: 10px;" nz-button>
+                <span>Cancel</span></button>
+              <button (click)="onsubmit()" [nzLoading]="isAddBtnLoading" nz-button nzType="primary">
+                <span>{{isEditing?'Update Business':'Add Business'}}</span></button>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </nz-card>
+  </div>
+</div> 
+
+

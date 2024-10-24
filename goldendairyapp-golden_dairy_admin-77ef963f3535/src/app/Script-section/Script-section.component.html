@@ -1,0 +1,255 @@
+<div nz-row *ngIf="!isAdding">
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" nzTitle="SCRIPT LIST">
+      <div nz-row style="margin-bottom:20px;">
+        <div nz-col nzSpan="6" [nzOffset]="18">
+          <button nz-button class="add-button" style="float: right;" (click)="onAdd()">
+            {{isEditing?'EDIT SCRIPT ':'ADD SCRIPT '}}</button>
+        </div>
+        <nz-tabset>
+          <nz-tab (nzClick)="onTabClick(true)" nzTitle="Active Scripts">
+          </nz-tab>
+          <nz-tab (nzClick)="onTabClick(false)" nzTitle="Inactive Scripts">
+          </nz-tab>
+        </nz-tabset>
+      </div>
+      <nz-table #basicTable [nzData]="ScriptList" [nzLoading]="isTableloading" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Language</th>
+            <th>Type</th>
+            <th>Script Name</th>
+            <th>Script Key</th>
+            <th>Status</th>
+            <th>Actions</th>
+            <!-- <th></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of ScriptList;let i=index">
+
+            <td>{{skip+i+1}}</td>
+            <td>{{data.Lang_Info?.language}}</td>
+            <td>{{ScriptType[data.type].name}}</td>
+            <td>{{data.ScriptName}}</td>
+            <td>{{data.ScriptKey}}</td>
+            <td>
+              <span *ngIf="data.status == true" style="color: green;">Active</span>
+              <span *ngIf="data.status == false" style="color: red;">Inactive</span>
+            </td>
+            <td>
+              <i nz-icon nzType="more" nzTheme="outline" nz-dropdown [nzDropdownMenu]="menu"></i>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item>
+                    <span (click)="onEdit(data)">Edit</span>
+                  </li>
+                  <li nz-menu-item>
+                    <span [ngSwitch]="data.status">
+                      <span *ngSwitchCase=true>
+
+                        <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: red;cursor: pointer;"
+                          nzPopconfirmTitle="Are you sure you want to Inactive this?">Make Inactive</span>
+                      </span>
+                      <span *ngSwitchCase=false>
+                        <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: blue;cursor: pointer;"
+                          nzPopconfirmTitle="Are you sure you want to Active this?">Make Active</span>
+                      </span>
+                      <span *ngSwitchDefault>
+                        NA
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </td>
+
+          </tr>
+        </tbody>
+      </nz-table>
+
+      <nz-pagination (nzPageIndexChange)="onNextPage($event)" [nzPageSize]="limit" [nzPageIndex]="currentPage"
+        [nzTotal]="Count" [nzShowTotal]="totalTemplate"></nz-pagination>
+      <ng-template #totalTemplate let-total><span class="ng-template" style="color: #ff0018;
+      font-weight: 600;">Total : {{ total }}</span></ng-template>
+    </nz-card>
+  </div>
+</div>
+
+
+
+<div nz-row *ngIf="isAdding">
+  <div nz-col nzSpan="12">
+    <nz-card style="width:100%;" [nzTitle]="title">
+      <ng-template #title>
+        {{isEditing?'Update Script ':'Add Script'}}
+      </ng-template>
+      <form nz-form [formGroup]="addForm">
+        <div nz-row>
+          <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Language</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="LanguageID" nzShowSearch
+                  nzPlaceHolder="Select language">
+                  <nz-option *ngFor="let item of LanguageList; let i=index" [nzValue]="item.LanguageID"
+                    [nzLabel]="item.language"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label nzSpan="6">Script Name</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="ScriptName" placeholder=" Enter Script Name">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label nzSpan="6">Script Key</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <input type="text" nz-input formControlName="ScriptKey" placeholder=" Enter Script Key">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Type</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="type" nzShowSearch nzPlaceHolder="Select Type">
+                  <nz-option *ngFor="let item of ScriptType; let i=index" [nzValue]="item.id" [nzLabel]="item.name">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 2">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">State</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="StateId" nzShowSearch nzPlaceHolder="Select State">
+                  <nz-option *ngFor="let item of StateList; let i=index" [nzValue]="item.StateId"
+                    [nzLabel]="item.StateName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 3">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">District</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="DistrictId" nzShowSearch
+                  nzPlaceHolder="Select District">
+                  <nz-option *ngFor="let item of DistrictList; let i=index" [nzValue]="item.DistrictId"
+                    [nzLabel]="item.DistrictName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 4">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">City</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="CityId" nzShowSearch nzPlaceHolder="Select City">
+                  <nz-option *ngFor="let item of CityList; let i=index" [nzValue]="item.CityId"
+                    [nzLabel]="item.CityName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 5">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Area</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="AreaId" nzShowSearch nzPlaceHolder="Select Area">
+                  <nz-option *ngFor="let item of AreaList; let i=index" [nzValue]="item.AreaId"
+                    [nzLabel]="item.AreaName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 6">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Business Type</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="BusinessId" nzShowSearch nzPlaceHolder="Select Business Type">
+                  <nz-option *ngFor="let item of BusinessList; let i=index" [nzValue]="item.BusinessId"
+                    [nzLabel]="item.BusinessName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 7">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Commodity</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="CommodityId" nzShowSearch nzPlaceHolder="Select Commodity">
+                  <nz-option *ngFor="let item of CommoditieList; let i=index" [nzValue]="item.CommodityId"
+                    [nzLabel]="item.CommodityName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 8">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Subscription</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="SubscriptionID" nzShowSearch nzPlaceHolder="Select Subscription">
+                  <nz-option *ngFor="let item of SubscriptionLists; let i=index" [nzValue]="item.SubscriptionID"
+                    [nzLabel]="item.Subscription_Name"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 9">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Banner</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="BannerID" nzShowSearch nzPlaceHolder="Select Banner">
+                  <nz-option *ngFor="let item of bannersList; let i=index" [nzValue]="item.BannerID"
+                    [nzLabel]="item.Description"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 10">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">T&C</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="TermsConditionsID" nzShowSearch nzPlaceHolder="Select T&C">
+                  <nz-option *ngFor="let item of termsConditionList; let i=index" [nzValue]="item.TermsConditionsID"
+                    [nzLabel]="item.Description"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24" *ngIf="addForm.get('type').value == 11">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24">Referrals</nz-form-label>
+              <nz-form-control nzSpan="12">
+                <nz-select style="width: 100%;" formControlName="ReferralID" nzShowSearch nzPlaceHolder="Select Referrals">
+                  <nz-option *ngFor="let item of ReferralsList; let i=index" [nzValue]="item.ReferralID"
+                    [nzLabel]="item.Description"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <!-- SupportingId -->
+          <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-control [nzSpan]="24" style="text-align: center;">
+                <button (click)="onClose()" nzType="default" style="margin-right: 10px;" nz-button>
+                  <span>Cancel</span></button>
+                <button (click)="onsubmit()" [nzLoading]="isAddBtnLoading" nz-button nzType="primary">
+                  <span>{{isEditing?'Update Script':'Add Script'}}</span></button>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </form>
+    </nz-card>
+  </div>
+</div>

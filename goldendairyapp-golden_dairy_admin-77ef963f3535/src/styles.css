@@ -1,0 +1,8 @@
+/* You can add global styles to this file, and also import other style files */
+nz-pagination{
+    float: right;
+    margin-top: 20px;
+}
+nz-table{
+    overflow-x: auto;
+}

@@ -1,0 +1,27 @@
+.trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    color: white;
+    cursor: pointer;
+    transition: color .3s;
+  }
+
+  .trigger:hover {
+    color: #1890ff;
+  
+  }
+  .showSide{
+    display: none;
+  }
+  .usericon{
+    float: right;
+    margin-right: 40px;
+    cursor: pointer;
+  }
+  .GmtTIme{
+    position: absolute;
+    padding: 0px 19px;
+    right: 10%;
+    margin-top: 14px;
+  }

@@ -1,0 +1,215 @@
+<div nz-row *ngIf="!isAdding">
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" nzTitle="ADMIN LIST">
+      <div nz-row style="margin-bottom:20px;">
+        <div nz-col nzSpan="6" [nzOffset]="18">
+          <button nz-button 
+          class="add-button" style="float: right;" (click)="onAdd()">{{isEditing?'EDIT ADMIN':'ADD ADMIN'}}</button>
+        </div>
+        <nz-tabset>
+          <nz-tab (nzClick)="onTabClick(true)" nzTitle="Active Admins">
+          </nz-tab>
+          <nz-tab (nzClick)="onTabClick(false)" nzTitle="Inactive Admins">
+          </nz-tab>
+        </nz-tabset>
+      </div>
+      <nz-table #basicTable [nzData]="adminList" [nzLoading]="isTableloading" nzShowPagination="false">
+        <thead>
+          <tr>
+           
+            <th>S.No</th>
+            <th>
+              <i nz-icon nzType="user" nzTheme="outline"></i>
+              Name</th>
+              <th>Super Admin</th>
+            <th>
+              <i nz-icon nzType="mobile" nzTheme="outline"></i>
+              Phone Number</th>
+            <th>
+              <i nz-icon nzType="mail" nzTheme="outline"></i>
+              EmailID</th>
+            <th>Designation</th>
+            <th>Status</th>
+            <th >Actions</th>
+            <!-- <th></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of adminList;let i=index">
+             
+            <td>{{skip+i+1}}</td>
+            <td>{{data.Name}}</td>
+            <td>{{data.Roles.Whether_Admin_Section?'Yes':'No'}}</td>
+            <td>{{data.PhoneNumber}}</td>
+            <td>{{data.EmailID}}</td>
+            <td>{{data.Designation}}</td>
+          
+               <td>
+                <span *ngIf="data.Status == true" style="color: green;">Active</span>
+                <span *ngIf="data.Status == false" style="color: red;">Inactive</span>
+              </td>
+              <td >
+                <i nz-icon nzType="more" nzTheme="outline" nz-dropdown [nzDropdownMenu]="menu"></i>
+                <!-- <i nz-icon nzType="more" nzTheme="outline" nz-button nz-dropdown [nzDropdownMenu]="menu"></i> -->
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item>
+                      <span (click)="onEdit(data)">Edit Basic Info</span>
+                    </li>
+                    <!-- <li nz-menu-item>
+                      <span (click)="onLinkRoleModal(data)">Link Modular Access</span>
+                    </li> -->
+                    <li nz-menu-item>
+                      <span (click)="onUpdatePassword(data)">Update Password</span></li>
+                      <li nz-menu-item> 
+                        <span [ngSwitch]="data.Status">
+                          <span *ngSwitchCase=true>
+                         
+                            <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: red;cursor: pointer;"
+                            nzPopconfirmTitle="Are you sure you want to Inactive this?">Make Inactive</span>
+                          </span>
+                          <span *ngSwitchCase=false>
+                            <span nz-popconfirm (nzOnConfirm)="onAction(data)" style="color: blue;cursor: pointer;"
+                            nzPopconfirmTitle="Are you sure you want to Active this?">Make Active</span>
+                          </span>
+                          <span *ngSwitchDefault>
+                            NA
+                          </span>
+                        </span>
+                      </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </td>
+              <!-- <td><i nz-icon nzType="edit" nzTheme="outline"
+                style="color:#ff0018;cursor: pointer;" (click)="onEdit(data)"></i></td> -->
+          </tr>
+        </tbody>
+      </nz-table>
+      <nz-pagination (nzPageIndexChange)="onNextPage($event)" [nzPageSize]="limit" [nzPageIndex]="currentPage"
+      [nzTotal]="TotalItems" [nzShowTotal]="totalTemplate"></nz-pagination>
+    <ng-template #totalTemplate let-total><span class="ng-template" style="color: #ff0018;
+      font-weight: 600;">Total : {{ total }}</span></ng-template>
+    </nz-card>
+  </div>
+</div>
+<div nz-row *ngIf="isAdding">
+  <div nz-col nzSpan="12">
+    <nz-card style="width:100%;" [nzTitle]="title">
+      <ng-template #title>
+        {{isEditing?'Update Admin':'Add Admin'}}
+      </ng-template>
+    <form nz-form [formGroup]="addForm">
+      <div nz-row>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label nzSpan="6">Name</nz-form-label>
+            <nz-form-control nzSpan="12" nzErrorTip="Please enter Name">
+              <input type="text" nz-input formControlName="Name" placeholder="Name">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label nzSpan="6">Mobile Number</nz-form-label>
+            <nz-form-control nzSpan="12">
+              <input type="text" nz-input formControlName="PhoneNumber" placeholder="PhoneNumber">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label nzSpan="6">EmailID</nz-form-label>
+            <nz-form-control nzSpan="12">
+              <input type="text" nz-input formControlName="EmailID" placeholder="EmailID">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label nzSpan="6">Designation</nz-form-label>
+            <nz-form-control nzSpan="12">
+              <input type="text" nz-input formControlName="Designation" placeholder="Designation">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label nzSpan="6">Super Admin</nz-form-label>
+            <nz-form-control nzSpan="12">
+              <nz-switch formControlName="Whether_Admin_Section">
+              </nz-switch>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24" *ngIf="!isEditing">
+          <nz-form-item>
+            <nz-form-label nzSpan="6">Password</nz-form-label>
+            <nz-form-control nzSpan="12">
+              <input type="password" nz-input formControlName="Password" placeholder="Password">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-control [nzSpan]="24" style="text-align: center;">
+              <button (click)="onClose()" nzType="default" style="margin-right: 10px;" nz-button>
+                <span>Cancel</span></button>
+              <button (click)="onsubmit()" [nzLoading]="isAddBtnLoading" nz-button nzType="primary">
+                <span>{{isEditing?'Update Admin':'Add Admin'}}</span></button>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </nz-card>
+  </div>
+</div>
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isPasswordVisible" nzTitle="Update Password" nzOkText='Update Password'
+  (nzOnCancel)="onCancelModal()" (nzOnOk)="onUpdatePasswordDetails()">
+  <ng-container *nzModalContent>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <form nz-form [formGroup]="updatePasswordForm">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="8">Password</nz-form-label>
+          <nz-form-control [nzSpan]="10" [nzValidateStatus]="passwordValidation" nzHasFeedback [nzErrorTip]="errorTip">
+            <input type="password" nz-input formControlName="Password" (input)="checkPassword()" placeholder="Password">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSpan]="8">Confirm Password</nz-form-label>
+          <nz-form-control [nzSpan]="10" [nzValidateStatus]="validateStatusConfirmPass" nzHasFeedback [nzErrorTip]="errortipValidate" >
+            <input type="password" nz-input formControlName="Confirm_Password" placeholder="Confirm Password">
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+</ng-container>
+</nz-modal>
+
+<!-- <nz-modal [(nzVisible)]="isRolesModal" [nzTitle]="linkModal" nzOkText='Submit'
+  (nzOnCancel)="onCancelRolesModal()" (nzOnOk)="onSubmitModularAccess()">
+  <ng-template #linkModal>
+    <span>Link Role To {{selectedRoleData?.Name}} </span>
+  </ng-template>
+  
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <form nz-form>
+        <nz-form-item>
+          <nz-form-label [nzSpan]="10">Select Modular Access Name</nz-form-label>
+          <nz-form-control [nzSpan]="14" nzErrorTip="please input Password">
+            <nz-select [formControl]="selectedRole">
+              <nz-option *ngFor="let item of modularAccessList; let i=index" [nzValue]="item.Modular_ID"
+               [nzLabel]="item.Modular_name">
+
+              </nz-option>
+            </nz-select>
+          
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+</nz-modal> -->

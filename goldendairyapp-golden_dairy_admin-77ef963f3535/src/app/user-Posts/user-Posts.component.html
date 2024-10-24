@@ -1,0 +1,121 @@
+<div nz-row>
+  <div nz-col nzSpan="24">
+    <nz-card style="width:100%;" nzTitle="POSTS LIST">
+      <div nz-row style="margin-bottom:20px;">
+        <nz-tabset>
+          <nz-tab (nzClick)="onTabClick(true)" nzTitle="Active Posts">
+          </nz-tab>
+          <nz-tab (nzClick)="onTabClick(false)" nzTitle="Inactive Posts">
+          </nz-tab>
+        </nz-tabset>
+      </div>
+      <form [formGroup]="filterForm">
+        <div nz-row [nzGutter]="16">
+          <div nz-col nzSpan="6">
+            <nz-form-item>
+              <nz-form-label [nzSpan]="24">Business</nz-form-label>
+              <nz-form-control nzSpan="24">
+                <nz-select style="width: 100%;" formControlName="BusinessId" nzShowSearch nzAllowClear
+                  nzPlaceHolder="Select Business">
+                  <nz-option *ngFor="let item of BusinessList; let i=index" [nzValue]="item.BusinessId"
+                    [nzLabel]="item.BusinessName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="6">
+            <nz-form-item>
+              <nz-form-label [nzSpan]="24">PostType</nz-form-label>
+              <nz-form-control nzSpan="24">
+                <nz-select style="width: 100%;" formControlName="PostType" nzShowSearch nzAllowClear
+                  nzPlaceHolder="Select Post Type">
+                  <nz-option [nzValue]="1" [nzLabel]="'New Post'"></nz-option>
+                  <nz-option [nzValue]="2" [nzLabel]="'Requirement Post'"></nz-option>
+                  <nz-option [nzValue]="3" [nzLabel]="'Discussion Post'"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col nzSpan="24">
+            <nz-form-item>
+              <nz-form-label [nzSpan]="24">Commodities</nz-form-label>
+              <nz-form-control nzSpan="24">
+                <nz-select style="width: 100%;" formControlName="CommoditiesId" nzShowSearch nzMode="multiple"
+                  nzAllowClear nzPlaceHolder="Select Commodities">
+                  <nz-option *ngFor="let item of CommoditieList; let i=index" [nzValue]="item.CommodityId"
+                    [nzLabel]="item.CommodityName"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </form>
+      <nz-table #basicTable [nzData]="tableList" [nzLoading]="isTableloading" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th></th>
+            <th>S.No</th>
+            <th>Description</th>
+            <th>Post Type</th>
+            <th>No of Views</th>
+            <th>No of Likes</th>
+            <th>No of Comments</th>
+            <th>Post Date</th>
+            <!-- <th></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let data of tableList;let i=index">
+
+            <tr>
+              <td *ngIf="data.Media_Type != 1" [nzExpand]="detailViewIndex==i" (nzExpandChange)="onExpandRow(data,i)"></td>
+              <td *ngIf="data.Media_Type == 1">NA</td>
+              <td>{{skip+i+1}}</td>
+              <td>{{data.Description}}</td>
+              <td>{{data.Post_Type==1?'New Post':data.Post_Type==2?'Requirement Post':data.Post_Type==3?'Discussion
+                Post':''}}</td>
+              <td>{{data.No_of_Views}}</td>
+              <td>{{data.No_of_Likes}}</td>
+              <td>{{data.No_of_Comments}}</td>
+              <td>{{data.created_at|date:'medium'}}</td>
+
+            </tr>
+            <tr [nzExpand]="detailViewIndex == i">
+              <div nz-row>
+                <div nz-col nzSpan="8">
+                  <div *ngIf="selectedData.Media_Type==2">
+                    <b><span style="margin-bottom: 15px;">Image:</span></b><br />
+                    <img [src]="selectedData.User_Post_Image_Data?.ImageOriginal" style="width: 350px;height: 200px;cursor: pointer;"/>
+                  </div>
+                  <div *ngIf="selectedData.Media_Type==3">
+                    <b><span style="margin-bottom: 15px;">Video:</span></b><br />
+                    <video  id="myVideo"  controls  controlsList="nodownload" loop style="width: 200px;height: 100px" [src]="selectedData.Video_Information?.Video_Original_URL">    
+                    </video>
+                  </div>
+                  <div *ngIf="selectedData.Media_Type==4">
+                    Audio:&nbsp;&nbsp;
+                    <button nz-button nzType="link"  (click)="onPlayAudio()"><i nz-icon
+                      [nzType]="isPlayingAudio==true?'play-circle':'pause-circle'" nzTheme="outline"></i> Play
+                    Audio</button>
+                  </div>
+                  <div *ngIf="selectedData.Media_Type==5">
+                    Document:&nbsp;&nbsp;<a target="_blank" [attr.href]="selectedData.Document_Information?.Document_URL">Click To View</a>
+                  </div>
+                  <div *ngIf="selectedData.Media_Type==6">
+                    <b><span style="margin-bottom: 15px;">Youtube Link:</span></b><br />
+                    <a target="_blank" [attr.href]="selectedData.Youtube_Link">{{selectedData.Youtube_Link}}</a>
+
+                  </div>
+                </div>
+              </div>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+      <nz-pagination (nzPageIndexChange)="onNextPage($event)" [nzPageSize]="limit" [nzPageIndex]="currentPage"
+        [nzTotal]="TotalItems" [nzShowTotal]="totalTemplate"></nz-pagination>
+      <ng-template #totalTemplate let-total><span class="ng-template" style="color: #ff0018;
+      font-weight: 600;">Total : {{ total }}</span></ng-template>
+    </nz-card>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div nz-row>
+  <div nz-col [nzXs]="{ span: 24 }" [nzLg]="{ span:24 }">
+    <div nz-row>
+      <div nz-col [nzXs]="{ span: 24 }" [nzLg]="{ span: 22,offset:1 }" style="padding: 10px 0px;">
+        <div>
+          <nz-card [nzLoading]="isCardLoading" [nzTitle]="name">
+            <ng-template #name>
+              <div nz-row>
+                <div nz-col [nzXs]="{ span: 16 }" [nzLg]="{ span:16 }">
+                  <span >Profile Info</span>
+                  </div>
+                  <div nz-col [nzXs]="{ span: 8 }" [nzLg]="{ span:8 }" style="text-align: right;">
+                      <p ><span style=" height: 10px;
+                        width: 10px;
+                        background-color: #05ba4a;
+                        border-radius: 50%;
+                        display: inline-block;margin-right: 5px;"></span> Activated</p>
+                    </div>
+                  </div>
+             
+            </ng-template>
+            
+            <div nz-row nzGutter="8">
+              <div nz-col nzSpan="14">
+                <p style="line-height: 40px;">Name <br>
+                <span class="size">{{AdminInfo.Name}}</span> </p> 
+                </div>
+              <div nz-col nzSpan="10">
+                <p style="line-height: 40px;">Phone Number<br>
+                <span class="size">{{AdminInfo.PhoneNumber}}</span></p>
+              </div>
+            </div>
+            <div nz-row nzGutter="8" style="margin-top: 10px;">
+              <div nz-col nzSpan="14">
+                <p style="line-height: 40px;">Email<br>
+                <span class="size">{{AdminInfo.EmailID}}</span></p>
+              </div>
+              <div nz-col nzSpan="10">
+                <p style="line-height: 40px;">Designation<br>
+                <span class="size">{{AdminInfo.Designation}}</span></p>
+              </div>
+            </div>
+          </nz-card>
+
+        </div>
+      </div>
+
+    </div>
+  
+  </div>
+</div>
